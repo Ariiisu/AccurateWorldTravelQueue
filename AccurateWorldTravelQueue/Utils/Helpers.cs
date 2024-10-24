@@ -4,7 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using Advanced_Combat_Tracker;
 
-namespace MyACTPlugin.Utils
+namespace AccurateWorldTravelQueue.Utils
 {
     internal static class Helpers
     {

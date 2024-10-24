@@ -1,4 +1,4 @@
-﻿namespace MyACTPlugin
+﻿namespace AccurateWorldTravelQueue
 {
     partial class PluginPage
     {
