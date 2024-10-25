@@ -31,9 +31,11 @@ namespace AccurateWorldTravelQueue
 
             Helpers._plugin = this;
 
-            Helpers._configPage = configPage = new PluginPage();
-            configPage.Dock = DockStyle.Fill;
-            pluginScreenSpace.Controls.Add(configPage);
+            //Helpers._configPage = configPage = new PluginPage();
+            //configPage.Dock = DockStyle.Fill;
+            //pluginScreenSpace.Controls.Add(configPage);
+            //移除不需要的插件UI。
+            ((TabControl)(pluginScreenSpace.Parent)).TabPages.Remove(pluginScreenSpace);
 
             // 初始化
             Attach();
@@ -110,7 +112,8 @@ namespace AccurateWorldTravelQueue
             }
             catch (Exception e)
             {
-                Task.Run(() => MessageBox.Show($"修改内存失败。原因: {e}", "ERROR"));
+                //避免用户迷惑错误，插件需要声明错误来源。
+                Task.Run(() => MessageBox.Show($"修改内存失败。原因: {e}", "显示实际跨服顺序"));
             }
         }
     }
