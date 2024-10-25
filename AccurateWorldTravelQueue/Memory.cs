@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace AccurateWorldTravelQueue
 {
@@ -27,6 +26,7 @@ namespace AccurateWorldTravelQueue
                 throw new Exception("获取 .text 分区失败");
 
             Patch();
+            Win32.CloseHandle(_processPtr);
         }
 
         private void Patch()
@@ -73,12 +73,16 @@ namespace AccurateWorldTravelQueue
                 switch (sectionName)
                 {
                     case 0x747865742E: // .text
-                        _textSectionStart = baseAddress + ReadInt32(sectionCursor, 12);
+                        var offset = ReadInt32(sectionCursor, 12);
+                        _textSectionStart = baseAddress + offset;
+
                         var size = ReadInt32(sectionCursor, 8);
-                        var buffers = new byte[size];
-                        IntPtr @out = default;
-                        Win32.ReadProcessMemory(_processPtr, _textSectionStart, buffers, (IntPtr)size, @out);
-                        _textSectionBytes = buffers.ToList();
+
+                        // 不知道为什么用 File.ReadAllBytes 的话要减去 0xC00 才能拿到实际地址
+                        // 懒得从这里面读 PE header了，就这样吧
+                        const int magicOffset = 0xC00;
+
+                        _textSectionBytes = File.ReadAllBytes(mainModule.FileName).ToList().GetRange(offset - magicOffset, size);
                         return true;
                 }
 
